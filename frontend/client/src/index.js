@@ -26,6 +26,8 @@ import Cart from './components/Customer/Cart.jsx';
 import CategoryPage from './components/Customer/CategoryPage';
 import BlogPage from './components/Customer/BlogPage';
 import HotOffersPage from './components/Customer/HotOffersPage';
+import PaymentSuccess from './components/Customer/PaymentSuccess';
+import CheckoutPage from './components/Customer/CheckoutPage';
 
 // Seller pages
 import Createseller from './components/Selller/Createseller.jsx';
@@ -60,6 +62,8 @@ const router = createBrowserRouter(
       <Route path='/customer/blog' element={<ProtectedRoute role="buyer"><BlogPage /></ProtectedRoute>} />
       <Route path='/customer/hotoffers' element={<ProtectedRoute role="buyer"><HotOffersPage /></ProtectedRoute>} />
       <Route path='/customer/cart' element={<ProtectedRoute role="buyer"><Cart /></ProtectedRoute>} />
+      <Route path='/customer/payment-success' element={<ProtectedRoute role="buyer"><PaymentSuccess /></ProtectedRoute>} />
+      <Route path='/customer/checkout' element={<ProtectedRoute role="buyer"><CheckoutPage /></ProtectedRoute>} />
       <Route path='/customer/createprofile' element={<ProtectedRoute role="buyer"><Createcustomer /></ProtectedRoute>} />
 
       {/* Seller profile creation (protected but no role check since profile doesn't exist yet) */}

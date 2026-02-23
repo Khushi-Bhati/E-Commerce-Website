@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
 import { Ordermodel } from "../models/Ordermodel.js";
 import { Paymentmodel } from "../models/Paymentmodel.js";
+import Stripe from "stripe";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_51MockStripeKey12345");
 
 const normalizeId = (value) => (value || "").toString().replace(/"/g, "").trim();
 
@@ -131,8 +134,56 @@ const updatePaymentStatusController = async (req, res) => {
     }
 };
 
+const createStripeSession = async (req, res) => {
+    try {
+        const { paymentDetails, totalAmount } = req.body;
+
+        const lineItems = [{
+            price_data: {
+                currency: 'inr',
+                product_data: {
+                    name: 'Easeincart Order',
+                    description: `Payment for ${paymentDetails.length} order(s)`
+                },
+                unit_amount: Math.round(totalAmount * 100), // Stripe expects amounts in smallest currency unit (paise)
+            },
+            quantity: 1,
+        }];
+
+        const origin = process.env.CORS_ORIGIN || "http://localhost:3000";
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ['card'],
+            line_items: lineItems,
+            mode: 'payment',
+            success_url: `${origin}/customer/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${origin}/customer/cart`,
+        });
+
+        res.status(200).json({ status: "success", id: session.id, url: session.url });
+    } catch (error) {
+        res.status(500).json({ status: "failed", message: error.message });
+    }
+};
+
+const verifyStripeSession = async (req, res) => {
+    try {
+        const { session_id } = req.body;
+        const session = await stripe.checkout.sessions.retrieve(session_id);
+
+        if (session.payment_status === 'paid') {
+            res.status(200).json({ status: "success", payment_status: session.payment_status });
+        } else {
+            res.status(400).json({ status: "failed", message: "Payment not completed" });
+        }
+    } catch (error) {
+        res.status(500).json({ status: "failed", message: error.message });
+    }
+};
+
 export {
     createPaymentController,
     getSellerPaymentsController,
-    updatePaymentStatusController
+    updatePaymentStatusController,
+    createStripeSession,
+    verifyStripeSession
 };

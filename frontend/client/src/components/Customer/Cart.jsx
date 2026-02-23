@@ -1,12 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import API from '../../config/api.js';
-import Swal from "sweetalert2";
 import Header from "./Header";
 import Footer from "./Footer";
 import "./../styles/cart.css";
 
-const PAYMENT_METHOD_OPTIONS = ["cod", "upi", "card", "netbanking", "wallet"];
+
 
 const getAddressFromProfile = (profile) => {
     if (!profile) return "";
@@ -23,19 +22,15 @@ const toNumber = (value) => {
 };
 
 const Cart = () => {
+    const navigate = useNavigate();
     const [cart, setCart] = useState({ items: [] });
     const [totals, setTotals] = useState({ itemCount: 0, subTotal: 0 });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [profileLoading, setProfileLoading] = useState(true);
     const [profile, setProfile] = useState(null);
-    const [checkoutForm, setCheckoutForm] = useState({
-        shippingAddress: "",
-        paymentMethod: "cod",
-        transactionId: ""
-    });
-    const [checkoutErrors, setCheckoutErrors] = useState({});
-    const [placingOrder, setPlacingOrder] = useState(false);
+    const [shippingAddress, setShippingAddress] = useState("");
+    const [addressError, setAddressError] = useState("");
 
     const userId = (localStorage.getItem("userID") || "").replace(/"/g, "").trim();
 
@@ -77,10 +72,7 @@ const Cart = () => {
                 const fetchedProfile = response.data.profile || null;
                 setProfile(fetchedProfile);
                 const address = getAddressFromProfile(fetchedProfile).trim();
-                setCheckoutForm((prev) => ({
-                    ...prev,
-                    shippingAddress: prev.shippingAddress || address
-                }));
+                setShippingAddress((prev) => prev || address);
             }
         } catch (requestError) {
             console.log("load profile error", requestError);
@@ -166,118 +158,25 @@ const Cart = () => {
         return Object.values(groupedBySeller);
     }, [cart.items]);
 
-    const handleCheckoutChange = (event) => {
-        const { name, value } = event.target;
-        setCheckoutForm((prev) => ({
-            ...prev,
-            [name]: value
-        }));
-
-        setCheckoutErrors((prev) => {
-            if (!prev[name]) return prev;
-            const next = { ...prev };
-            delete next[name];
-            return next;
-        });
-    };
-
-    const validateCheckout = () => {
-        const errors = {};
-        const address = checkoutForm.shippingAddress.trim();
-        const method = checkoutForm.paymentMethod;
-        const transactionId = checkoutForm.transactionId.trim();
-
-        if (!address || address.length < 8) {
-            errors.shippingAddress = "Enter a valid shipping address.";
-        }
-
-        if (!PAYMENT_METHOD_OPTIONS.includes(method)) {
-            errors.paymentMethod = "Select a valid payment method.";
-        }
-
-        if (method !== "cod" && !transactionId) {
-            errors.transactionId = "Transaction ID is required for this payment method.";
-        }
-
+    const proceedToCheckout = () => {
         if (checkoutSummary.length === 0) {
-            errors.checkout = "No valid cart items available for checkout.";
-        }
-
-        return errors;
-    };
-
-    const placeOrder = async () => {
-        if (!userId || placingOrder) return;
-
-        const errors = validateCheckout();
-        setCheckoutErrors(errors);
-        if (Object.keys(errors).length > 0) {
+            setAddressError("No valid cart items available for checkout.");
             return;
         }
-
-        try {
-            setPlacingOrder(true);
-
-            const createdOrders = [];
-            for (const group of checkoutSummary) {
-                const orderResponse = await API.post("/order/create", {
-                    buyerId: userId,
-                    sellerId: group.sellerId,
-                    items: group.items,
-                    totalAmount: group.totalAmount,
-                    shippingAddress: checkoutForm.shippingAddress.trim()
-                });
-
-                if (orderResponse.data.status !== "success" || !orderResponse.data.order?._id) {
-                    throw new Error(orderResponse.data.message || "Failed to create order");
-                }
-
-                const paymentResponse = await API.post("/payment/create", {
-                    orderId: orderResponse.data.order._id,
-                    buyerId: userId,
-                    sellerId: group.sellerId,
-                    amount: group.totalAmount,
-                    method: checkoutForm.paymentMethod,
-                    transactionId:
-                        checkoutForm.paymentMethod === "cod" ? "" : checkoutForm.transactionId.trim()
-                });
-
-                if (paymentResponse.data.status !== "success") {
-                    throw new Error(paymentResponse.data.message || "Failed to record payment");
-                }
-
-                createdOrders.push(orderResponse.data.order);
-            }
-
-            await clearCart();
-            setCheckoutForm((prev) => ({
-                ...prev,
-                transactionId: ""
-            }));
-
-            Swal.fire({
-                icon: "success",
-                title: "Order placed successfully",
-                html: `
-                    <div style="text-align:left">
-                      <p><b>Orders:</b> ${createdOrders.length}</p>
-                      <p><b>Total amount:</b> Rs ${toNumber(totals.subTotal).toFixed(2)}</p>
-                      <p><b>Payment method:</b> ${checkoutForm.paymentMethod.toUpperCase()}</p>
-                    </div>
-                `
-            });
-        } catch (checkoutError) {
-            console.log("place order error", checkoutError);
-            Swal.fire({
-                icon: "error",
-                title:
-                    checkoutError?.response?.data?.message ||
-                    checkoutError?.message ||
-                    "Checkout failed. Please try again."
-            });
-        } finally {
-            setPlacingOrder(false);
+        if (!shippingAddress.trim() || shippingAddress.trim().length < 8) {
+            setAddressError("Please enter a valid shipping address (min 8 characters).");
+            return;
         }
+        setAddressError("");
+
+        navigate("/customer/checkout", {
+            state: {
+                cartData: cart,
+                totals,
+                checkoutItems: checkoutSummary,
+                shippingAddress: shippingAddress.trim(),
+            }
+        });
     };
 
     return (
@@ -345,8 +244,8 @@ const Cart = () => {
 
                             <div className="checkout-card">
                                 <div className="checkout-card-header">
-                                    <h3>Checkout</h3>
-                                    <p>Fill details below to place your order</p>
+                                    <h3>Quick Checkout</h3>
+                                    <p>Enter your shipping address to proceed</p>
                                 </div>
                                 <div className="checkout-card-body">
                                     {!profileLoading && !profile && (
@@ -362,47 +261,22 @@ const Cart = () => {
                                                 id="shippingAddress"
                                                 name="shippingAddress"
                                                 rows={3}
-                                                value={checkoutForm.shippingAddress}
-                                                onChange={handleCheckoutChange}
+                                                value={shippingAddress}
+                                                onChange={(e) => { setShippingAddress(e.target.value); setAddressError(""); }}
                                                 placeholder="Enter your full shipping address"
                                             />
-                                            {checkoutErrors.shippingAddress && <small>{checkoutErrors.shippingAddress}</small>}
-                                        </div>
-
-                                        <div className="checkout-field">
-                                            <label>Payment Method</label>
-                                            <select
-                                                id="paymentMethod"
-                                                name="paymentMethod"
-                                                value={checkoutForm.paymentMethod}
-                                                onChange={handleCheckoutChange}
-                                            >
-                                                {PAYMENT_METHOD_OPTIONS.map((option) => (
-                                                    <option key={option} value={option}>{option.toUpperCase()}</option>
-                                                ))}
-                                            </select>
-                                            {checkoutErrors.paymentMethod && <small>{checkoutErrors.paymentMethod}</small>}
-                                        </div>
-
-                                        <div className="checkout-field">
-                                            <label>Transaction ID</label>
-                                            <input
-                                                id="transactionId"
-                                                name="transactionId"
-                                                value={checkoutForm.transactionId}
-                                                onChange={handleCheckoutChange}
-                                                placeholder={checkoutForm.paymentMethod === "cod" ? "Not required for COD" : "Enter transaction ID"}
-                                                disabled={checkoutForm.paymentMethod === "cod"}
-                                            />
-                                            {checkoutErrors.transactionId && <small>{checkoutErrors.transactionId}</small>}
+                                            {addressError && <small style={{ fontSize: 12, color: '#ef4444', fontWeight: 600 }}>{addressError}</small>}
                                         </div>
                                     </div>
 
-                                    {checkoutErrors.checkout && <p className="checkout-error">{checkoutErrors.checkout}</p>}
-
                                     <div className="checkout-actions">
-                                        <button type="button" className="place-order-btn" onClick={placeOrder} disabled={placingOrder}>
-                                            {placingOrder ? "Placing Order…" : "Place Order →"}
+                                        <button
+                                            id="proceed-to-checkout-btn"
+                                            type="button"
+                                            className="place-order-btn"
+                                            onClick={proceedToCheckout}
+                                        >
+                                            Proceed to Payment →
                                         </button>
                                     </div>
                                 </div>
