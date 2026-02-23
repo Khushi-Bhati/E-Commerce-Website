@@ -541,11 +541,15 @@ const Header = ({ cartCount = 0, searchTerm, onSearchChange }) => {
                 <div className="mobile-nav-user">
                     <div className="user-avatar">
                         {profiledata?.profileimg ? (
-<<<<<<< HEAD
-                            <img src={profiledata.profileimg.startsWith("http") ? profiledata.profileimg : `${process.env.REACT_APP_ENV_URL}/temp/${profiledata.profileimg}`} alt="avatar" className="user-avatar-img" />
-=======
-                            <img src={profiledata.profileimg.startsWith("http") ? profiledata.profileimg : `http://localhost:8000/temp/${profiledata.profileimg}`} alt="avatar" className="user-avatar-img" />
->>>>>>> f1b853994271a68fafe3d6ce836129b73a6c8a6a
+<img
+  src={
+    profiledata.profileimg.startsWith("http")
+      ? profiledata.profileimg
+      : `${process.env.REACT_APP_ENV_URL}/temp/${profiledata.profileimg}`
+  }
+  alt="avatar"
+  className="user-avatar-img"
+/>
                         ) : (
                             <div className="user-avatar-initial">
                                 {profiledata?.name ? profiledata.name.charAt(0).toUpperCase() : (role === 'buyer' ? 'B' : 'U')}
