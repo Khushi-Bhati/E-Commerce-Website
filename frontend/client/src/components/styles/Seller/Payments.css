@@ -1,0 +1,178 @@
+@import './SellerShared.css';
+
+/* ═══════════════════════════════════════════════════════════
+   PAYMENTS PAGE — Enhanced Financial Summary & Table
+   v2.0 — Fully Responsive
+═══════════════════════════════════════════════════════════ */
+
+/* Financial highlight card */
+.payments-highlight-card {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: #fff;
+    border-radius: 20px;
+    padding: 28px;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.25);
+}
+
+.payments-highlight-card::before {
+    content: '';
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: rgba(99, 102, 241, 0.15);
+}
+
+.payments-highlight-card::after {
+    content: '';
+    position: absolute;
+    bottom: -30px;
+    left: 30px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: rgba(139, 92, 246, 0.10);
+}
+
+.payments-highlight-label {
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 1;
+}
+
+.payments-highlight-value {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: -0.8px;
+    position: relative;
+    z-index: 1;
+    line-height: 1;
+}
+
+.payments-highlight-sub {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.55);
+    margin-top: 6px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Inline amount display */
+.payments-amount {
+    font-weight: 700;
+    color: #0f172a;
+    font-size: 14px;
+}
+
+.payments-amount.credit {
+    color: #065f46;
+}
+
+.payments-amount.debit {
+    color: #991b1b;
+}
+
+/* Method badge enhanced */
+.payments-method {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #065f46;
+    background: #d1fae5;
+    padding: 4px 10px;
+    border-radius: 7px;
+    display: inline-block;
+    border: 1px solid #a7f3d0;
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+}
+
+.payments-method.card {
+    background: #eff6ff;
+    color: #1e40af;
+    border-color: #bfdbfe;
+}
+
+.payments-method.cash {
+    background: #f0fdf4;
+    color: #065f46;
+    border-color: #a7f3d0;
+}
+
+.payments-method.cod {
+    background: #fff7ed;
+    color: #9a3412;
+    border-color: #fdba74;
+}
+
+.payments-method.paypal {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border-color: #93c5fd;
+}
+
+.payments-method.stripe {
+    background: #faf5ff;
+    color: #7e22ce;
+    border-color: #d8b4fe;
+}
+
+/* Payments summary cards with icons */
+.payments-summary-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.payments-summary-card .card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    margin-bottom: 4px;
+}
+
+.payments-summary-card:nth-child(1) .card-icon {
+    background: rgba(16, 185, 129, 0.12);
+    color: #10b981;
+}
+
+.payments-summary-card:nth-child(2) .card-icon {
+    background: rgba(239, 68, 68, 0.12);
+    color: #ef4444;
+}
+
+.payments-summary-card:nth-child(3) .card-icon {
+    background: rgba(245, 158, 11, 0.12);
+    color: #f59e0b;
+}
+
+.payments-summary-card:nth-child(4) .card-icon {
+    background: rgba(99, 102, 241, 0.12);
+    color: #6366f1;
+}
+
+@media (max-width: 640px) {
+    .payments-highlight-value {
+        font-size: 2rem;
+    }
+
+    .payments-highlight-card {
+        padding: 20px;
+    }
+}

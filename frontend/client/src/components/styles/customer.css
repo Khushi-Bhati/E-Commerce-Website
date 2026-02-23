@@ -1,0 +1,263 @@
+/* ═══════════════════════════════════════════════
+   PREMIUM CUSTOMER PROFILE CREATION CSS
+═══════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+.main-div {
+  min-height: 100vh;
+  background: radial-gradient(circle at top right, #e0e7ff, transparent 40%),
+    radial-gradient(circle at bottom left, #fce7f3, transparent 40%),
+    #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  font-family: 'Inter', sans-serif;
+}
+
+.wrapper-div {
+  width: 100%;
+  max-width: 500px;
+  animation: slideUpFade 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideUpFade {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.98);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 28px;
+  box-shadow: 0 24px 50px rgba(15, 23, 42, 0.05),
+    0 4px 12px rgba(15, 23, 42, 0.02);
+  overflow: hidden;
+  position: relative;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(135deg, #6366f1, #ec4899, #f59e0b);
+}
+
+.card-inner {
+  padding: 40px 48px;
+  text-align: center;
+}
+
+.card h2 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+}
+
+.card-subtitle {
+  font-size: 15px;
+  color: #64748b;
+  margin-bottom: 32px;
+  line-height: 1.5;
+}
+
+/* ─────────────────────────────────────────────────────────
+   PROFILE UPLOAD SECTION
+───────────────────────────────────────────────────────── */
+.upload-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.profile-pic-container {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  margin-bottom: 8px;
+}
+
+.profile-pic {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #ffffff;
+  box-shadow: 0 10px 25px rgba(99, 102, 241, 0.2);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  background: #f1f5f9;
+}
+
+.profile-pic-container:hover .profile-pic {
+  transform: scale(1.04);
+}
+
+.upload-icon {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: #ffffff;
+  width: 34px;
+  height: 34px;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 34px;
+  border-radius: 50%;
+  text-align: center;
+  cursor: pointer;
+  border: 3px solid #ffffff;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+  transition: all 0.2s ease;
+}
+
+.upload-icon:hover {
+  transform: scale(1.15) rotate(90deg);
+  background: linear-gradient(135deg, #4f46e5, #3730a3);
+}
+
+.upload-section p {
+  font-size: 13px;
+  color: #94a3b8;
+  margin-top: 10px;
+}
+
+/* ─────────────────────────────────────────────────────────
+   FORM FIELDS
+───────────────────────────────────────────────────────── */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: left;
+}
+
+.input-group {
+  position: relative;
+}
+
+.input-group input {
+  width: 100%;
+  height: 56px;
+  padding: 0 20px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 16px;
+  outline: none;
+  font-size: 15px;
+  font-family: 'Inter', sans-serif;
+  background: #ffffff;
+  color: #0f172a;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+  box-shadow: inset 0 2px 4px rgba(15, 23, 42, 0.02);
+}
+
+.input-group input::placeholder {
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+.input-group input:focus {
+  border-color: #6366f1;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15), inset 0 2px 4px rgba(15, 23, 42, 0.01);
+}
+
+.input-group input:hover:not(:focus) {
+  border-color: #cbd5e1;
+}
+
+.mobile-error {
+  font-size: 13px;
+  color: #ef4444;
+  margin-top: -10px;
+  padding-left: 20px;
+  font-weight: 500;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────
+   SUBMIT BUTTON
+───────────────────────────────────────────────────────── */
+.submit-btn {
+  margin-top: 20px;
+  width: 100%;
+  height: 56px;
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 16px;
+  font-size: 17px;
+  font-weight: 600;
+  font-family: 'Outfit', sans-serif;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.35), 0 2px 6px rgba(99, 102, 241, 0.25);
+}
+
+.submit-btn:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 25px rgba(99, 102, 241, 0.45), 0 4px 10px rgba(99, 102, 241, 0.3);
+  background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%) !important;
+}
+
+.submit-btn:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+}
+
+.submit-btn:disabled {
+  background: #cbd5e1 !important;
+  box-shadow: none;
+  cursor: not-allowed;
+  transform: none;
+  color: #94a3b8 !important;
+}
+
+/* ─────────────────────────────────────────────────────────
+   RESPONSIVE DESIGN
+───────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .main-div {
+    padding: 20px 16px;
+    align-items: flex-start;
+  }
+
+  .card-inner {
+    padding: 32px 24px;
+  }
+
+  .card h2 {
+    font-size: 24px;
+  }
+}

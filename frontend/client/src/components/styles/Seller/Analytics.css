@@ -1,0 +1,183 @@
+@import './SellerShared.css';
+
+/* ═══════════════════════════════════════════════════════════
+   ANALYTICS PAGE — Enhanced KPI & Metrics
+   v2.0 — Fully Responsive
+═══════════════════════════════════════════════════════════ */
+
+/* Gradient shimmer on metric cards */
+.analytics-metric-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.analytics-metric-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.4),
+            transparent);
+    transform: skewX(-20deg);
+    transition: left 0.6s ease;
+    pointer-events: none;
+}
+
+.analytics-metric-card:hover::after {
+    left: 140%;
+}
+
+/* Icon block within metric card */
+.analytics-metric-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+    font-size: 1.3rem;
+}
+
+.analytics-metric-icon.orders {
+    background: rgba(99, 102, 241, 0.12);
+    color: #6366f1;
+}
+
+.analytics-metric-icon.pending {
+    background: rgba(245, 158, 11, 0.12);
+    color: #f59e0b;
+}
+
+.analytics-metric-icon.delivered {
+    background: rgba(16, 185, 129, 0.12);
+    color: #10b981;
+}
+
+.analytics-metric-icon.revenue {
+    background: rgba(6, 182, 212, 0.12);
+    color: #06b6d4;
+}
+
+.analytics-metric-icon.products {
+    background: rgba(139, 92, 246, 0.12);
+    color: #8b5cf6;
+}
+
+.analytics-metric-icon.customers {
+    background: rgba(239, 68, 68, 0.12);
+    color: #ef4444;
+}
+
+.analytics-metric-icon.reviews {
+    background: rgba(245, 158, 11, 0.12);
+    color: #f59e0b;
+}
+
+/* KPI grid cards */
+.analytics-kpi-card {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.analytics-kpi-card h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(1.6rem, 3vw, 2rem);
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.5px;
+    line-height: 1;
+    margin-top: 6px;
+}
+
+/* Trend indicators */
+.analytics-trend {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 999px;
+    margin-top: 8px;
+}
+
+.analytics-trend.up {
+    background: rgba(16, 185, 129, 0.10);
+    color: #065f46;
+}
+
+.analytics-trend.down {
+    background: rgba(239, 68, 68, 0.10);
+    color: #991b1b;
+}
+
+/* Revenue highlight */
+.analytics-revenue-highlight {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: #fff;
+    border-color: transparent;
+}
+
+.analytics-revenue-highlight p {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.analytics-revenue-highlight h2 {
+    color: #fff !important;
+    font-size: 1.75rem !important;
+}
+
+.analytics-revenue-highlight::before {
+    background: linear-gradient(90deg, #6366f1, #8b5cf6, #06b6d4) !important;
+}
+
+/* Analytics chart placeholder */
+.analytics-chart-area {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    box-shadow: 0 6px 24px rgba(15, 23, 42, 0.07);
+    padding: 24px;
+    margin-top: 1.5rem;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 8px;
+    color: #94a3b8;
+}
+
+.analytics-chart-area p {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Custom progress bar per KPI */
+.analytics-kpi-progress {
+    width: 100%;
+    height: 5px;
+    background: #e2e8f0;
+    border-radius: 99px;
+    overflow: hidden;
+    margin-top: 12px;
+}
+
+.analytics-kpi-progress-fill {
+    height: 100%;
+    border-radius: 99px;
+    background: linear-gradient(90deg, #6366f1, #8b5cf6);
+}
+
+@media (max-width: 640px) {
+    .analytics-kpi-card h3 {
+        font-size: 1.5rem;
+    }
+}
