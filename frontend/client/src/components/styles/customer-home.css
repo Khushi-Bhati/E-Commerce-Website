@@ -1,0 +1,51 @@
+.customer-home-toolbar {
+    margin: 8px 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.customer-home-result {
+    margin: 0;
+    color: #475569;
+    font-size: 14px;
+}
+
+.customer-home-clear {
+    border: 1px solid #d1d5db;
+    background: #fff;
+    color: #0f172a;
+    border-radius: 8px;
+    padding: 7px 12px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.customer-home-clear:hover {
+    background: #f8fafc;
+}
+
+.category-filter-btn {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.category-filter-btn.active {
+    color: #0f766e;
+    font-weight: 700;
+}
+
+.sidebar-category-btn {
+    width: 100%;
+    border: 1px solid transparent;
+    border-radius: 8px;
+}
+
+.sidebar-category-btn.active {
+    background: #f0fdfa;
+    border-color: #99f6e4;
+}
