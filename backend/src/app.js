@@ -11,27 +11,27 @@ import paymentrouter from "./routes/paymentroute.js";
 import reviewrouter from "./routes/reviewroute.js";
 import settingrouter from "./routes/settingroute.js";
 import analyticsrouter from "./routes/analyticsroute.js";
-const app=express();
+const app = express();
 
 
 
 app.use(cors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+    origin: true,
     credentials: true,
 }))
 
 app.use(express.json());
-app.use(express.urlencoded({extended:true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 app.use(cookieparser());
 
 
-app.use("/Easeincart/user",userrouter)
-app.use("/Easeincart/customer",buyerrouter)
-app.use("/Easeincart/seller",sellerrouter)
-app.use("/Easeincart/product",productrouter)
-app.use("/Easeincart/cart",cartrouter)
+app.use("/Easeincart/user", userrouter)
+app.use("/Easeincart/customer", buyerrouter)
+app.use("/Easeincart/seller", sellerrouter)
+app.use("/Easeincart/product", productrouter)
+app.use("/Easeincart/cart", cartrouter)
 app.use("/Easeincart/order", orderrouter)
 app.use("/Easeincart/payment", paymentrouter)
 app.use("/Easeincart/review", reviewrouter)
@@ -43,4 +43,4 @@ app.use("/Easeincart/analytics", analyticsrouter)
 
 
 
-export {app}
+export { app }
