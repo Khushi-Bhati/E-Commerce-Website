@@ -183,11 +183,11 @@ const CheckoutPage = () => {
                 <div className="checkout-grid-layout">
 
                     {/* ── Left: form ── */}
-                    <div>
+                    <div className="checkout-form-panel">
 
                         {/* Step 1: Delivery Address */}
                         {currentStep >= 1 && (
-                            <div className="checkout-glass-card" style={{ marginBottom: 20 }}>
+                            <div className="checkout-glass-card checkout-delivery-card">
                                 <div className="payment-section-header">
                                     <h2>📦 Delivery Address</h2>
                                     <p>Where should we deliver your order?</p>
@@ -206,8 +206,7 @@ const CheckoutPage = () => {
 
                                     {currentStep === 1 && (
                                         <button
-                                            className="checkout-pay-btn"
-                                            style={{ width: "100%", margin: 0, marginTop: 4 }}
+                                            className="checkout-continue-btn"
                                             onClick={() => {
                                                 if (!address.trim() || address.trim().length < 8) {
                                                     setErrors({ address: "Please enter a valid shipping address (min 8 characters)." });
@@ -222,7 +221,7 @@ const CheckoutPage = () => {
                                     )}
                                     {currentStep > 1 && (
                                         <button
-                                            style={{ background: "none", border: "none", color: "rgba(255,255,255,0.5)", fontSize: 13, cursor: "pointer", marginTop: 4, fontFamily: "Inter,sans-serif" }}
+                                            className="checkout-edit-link"
                                             onClick={() => setCurrentStep(1)}
                                         >
                                             ✏️ Edit address
@@ -264,8 +263,8 @@ const CheckoutPage = () => {
 
                                     {/* Card selected: Stripe badge */}
                                     {method === "card" && (
-                                        <div className="stripe-secure-badge">
-                                            <span className="stripe-icon">🔒</span>
+                                        <div className="checkout-info-box stripe">
+                                            <span className="checkout-info-box-icon">🔒</span>
                                             <span>
                                                 You'll be redirected to <strong>Stripe's secure payment page</strong> to complete your payment.
                                             </span>
@@ -292,8 +291,9 @@ const CheckoutPage = () => {
 
                                     {/* COD info */}
                                     {method === "cod" && (
-                                        <div style={{ background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.3)", borderRadius: 10, padding: "10px 14px", fontSize: 13, color: "rgba(255,255,255,0.7)", marginBottom: 4 }}>
-                                            💡 Pay with cash when your order is delivered. No transaction ID needed.
+                                        <div className="checkout-info-box cod">
+                                            <ion-icon name="bulb-outline" className="checkout-info-box-icon"></ion-icon>
+                                            <span>Pay with cash when your order is delivered. No transaction ID needed.</span>
                                         </div>
                                     )}
                                 </div>
@@ -346,7 +346,7 @@ const CheckoutPage = () => {
                                     <span>Tax</span>
                                     <span>₹0.00</span>
                                 </div>
-                                <div className="checkout-total-row total">
+                                <div className="checkout-total-row grand">
                                     <span>Total</span>
                                     <span>₹{toNumber(totals.subTotal).toFixed(2)}</span>
                                 </div>
