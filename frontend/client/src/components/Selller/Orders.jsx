@@ -352,7 +352,8 @@ const Orders = () => {
 
                 {!loading && !error && filteredOrders.length > 0 && (
                     <div className="orders-table-wrap">
-                        <table className="orders-table">
+                        <div className="table-responsive">
+                            <table className="orders-table">
                             <thead>
                                 <tr>
                                     <th>Order</th>
@@ -451,7 +452,8 @@ const Orders = () => {
                                     )
                                 })}
                             </tbody>
-                        </table>
+                            </table>
+                        </div>
 
                         <div className="orders-pagination">
                             <div className="orders-pagination-info">Showing {Math.min(filteredOrders.length, (page - 1) * pageSize + 1)} - {Math.min(filteredOrders.length, page * pageSize)} of {filteredOrders.length}</div>

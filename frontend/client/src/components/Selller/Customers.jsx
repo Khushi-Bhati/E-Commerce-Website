@@ -123,7 +123,8 @@ const Customers = () => {
 
                 {!loading && !error && filteredCustomers.length > 0 && (
                     <div className="customers-table-wrap">
-                        <table className="customers-table">
+                        <div className="table-responsive">
+                            <table className="customers-table">
                             <thead>
                                 <tr>
                                     <th>Customer</th>
@@ -158,7 +159,8 @@ const Customers = () => {
                                     </tr>
                                 ))}
                             </tbody>
-                        </table>
+                            </table>
+                        </div>
                     </div>
                 )}
             </main>

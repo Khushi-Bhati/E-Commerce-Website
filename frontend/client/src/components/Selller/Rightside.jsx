@@ -1,7 +1,9 @@
 import React, { useRef, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import "./../styles/Seller/Dasbaord.css";
+import API from '../../config/api.js';
+import { sellerprofiledata } from '../../reducers/Reducers.js';
 
 import profile1 from "./../../images/profile-1.jpg";
 import profile2 from "./../../images/profile-2.jpg";
@@ -47,9 +49,27 @@ const HEALTH = [
     { label: "Customer Satisfaction", pct: 91, color: "#06b6d4" },
 ];
 
-const Rightside = () => {
+const Rightside = ({ isSidebarOpen = false, onOpenSidebar = () => { }, onCloseSidebar = () => { } }) => {
+    const dispatch = useDispatch();
     const profiledata = useSelector(state => state.customer.sellerprofile);
+    const sellerId = useSelector(state => state.customer.userID) || localStorage.getItem("userID");
     const themeRef = useRef(null);
+
+    useEffect(() => {
+        const loadSellerProfile = async () => {
+            if (!sellerId) return;
+            try {
+                const response = await API.get(`/seller/getprofile/${sellerId}`);
+                if (response?.data?.status === "success" && response?.data?.profile) {
+                    dispatch(sellerprofiledata(response.data.profile));
+                }
+            } catch (_) {
+                // keep fallback UI when profile is unavailable
+            }
+        };
+
+        loadSellerProfile();
+    }, [dispatch, sellerId]);
 
     useEffect(() => {
         if (!themeRef.current) return;
@@ -63,17 +83,8 @@ const Rightside = () => {
         });
     }, []);
 
-    const openSidebar = () => {
-        document.querySelector('.main-wrapper aside')?.classList.add('sidebar-open');
-        document.querySelector('.sidebar-overlay')?.classList.add('active');
-    };
-    const closeSidebarOverlay = () => {
-        document.querySelector('.main-wrapper aside')?.classList.remove('sidebar-open');
-        document.querySelector('.sidebar-overlay')?.classList.remove('active');
-    };
-
-    const sellerName = profiledata?.name || "Admin";
-    const sellerEmail = profiledata?.userID?.email || "";
+    const sellerName = profiledata?.name || "Seller";
+    const sellerEmail = profiledata?.userID?.email || profiledata?.email || "";
     const sellerImg = profiledata?.profileimg || null;
     const sellerMobile = profiledata?.mobileno || "";
     const sellerAddress = profiledata?.address || "";
@@ -81,14 +92,14 @@ const Rightside = () => {
     return (
         <>
             {/* ── overlay for mobile sidebar ── */}
-            <div className="sidebar-overlay" onClick={closeSidebarOverlay} />
+            <div className={`sidebar-overlay ${isSidebarOpen ? "active" : ""}`} onClick={onCloseSidebar} />
 
             {/* ONE single wrapper that occupies the 3rd grid column */}
             <div className="right">
 
                 {/* ── TOP BAR ── */}
                 <div className="top">
-                    <button id="menu_bar" aria-label="Open menu" onClick={openSidebar}>
+                    <button id="menu_bar" aria-label="Open menu" onClick={onOpenSidebar}>
                         <span className="material-symbols-sharp">menu</span>
                     </button>
 

@@ -178,7 +178,8 @@ const Payments = () => {
 
                 {!loading && !error && payments.length > 0 && (
                     <div className="payments-table-wrap">
-                        <table className="payments-table">
+                        <div className="table-responsive">
+                            <table className="payments-table">
                             <thead>
                                 <tr>
                                     <th>Payment</th>
@@ -239,7 +240,8 @@ const Payments = () => {
                                     );
                                 })}
                             </tbody>
-                        </table>
+                            </table>
+                        </div>
                     </div>
                 )}
             </main>

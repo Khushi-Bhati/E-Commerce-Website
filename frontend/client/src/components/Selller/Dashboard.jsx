@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Sidebar from './Sidebar';
 import Rightside from './Rightside';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,8 +10,17 @@ import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   useSelector((state) => state.customer.sellerprofile)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   const Dispatch = useDispatch()
+
+  const openSidebar = () => {
+    setIsSidebarOpen(true)
+  }
+
+  const closeSidebar = () => {
+    setIsSidebarOpen(false)
+  }
 
   const getprofile = async () => {
     try {
@@ -34,10 +43,10 @@ const Dashboard = () => {
 
   return (
     <div className='main-wrapper'>
-      <Sidebar />
+      <Sidebar isOpen={isSidebarOpen} onOpen={openSidebar} onClose={closeSidebar} />
 
       <main>
-        <h1>Dashboard</h1>
+        <h1 className="dashboard-page-title">Dashboard</h1>
         <div className="date">
           <input type="date" />
         </div>
@@ -146,7 +155,7 @@ const Dashboard = () => {
           <Link to="/seller/orders">Show All Orders →</Link>
         </div>
       </main>
-      <Rightside />
+      <Rightside isSidebarOpen={isSidebarOpen} onOpenSidebar={openSidebar} onCloseSidebar={closeSidebar} />
     </div>
   )
 }

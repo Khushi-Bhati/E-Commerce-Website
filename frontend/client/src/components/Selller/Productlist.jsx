@@ -163,7 +163,10 @@ const Productlist = () => {
             <div className="main-wrapper">
                 <Sidebar />
                 <div className="product-container">
-                    <h2>Product List</h2>
+                    <h2>
+                        Product List
+                        <span className="product-count-badge">{products.length}</span>
+                    </h2>
 
                     {editingProduct && (
                         <div className="edit-product-card">
@@ -199,49 +202,59 @@ const Productlist = () => {
                         </div>
                     )}
 
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Image</th>
-                                <th>Product Name</th>
-                                <th>Detail</th>
-                                <th>Amount</th>
-                                <th>Stock</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {loading && (
-                                <tr>
-                                    <td colSpan="6">Loading products...</td>
-                                </tr>
-                            )}
-                            {!loading && products.length === 0 && (
-                                <tr>
-                                    <td colSpan="6">No products found</td>
-                                </tr>
-                            )}
-                            {!loading && products.map((product) => (
-                                <tr key={product._id}>
-                                    <td>
-                                        {product.productimg?.[0] ? <img src={product.productimg[0]} alt={product.productname} /> : "NA"}
-                                    </td>
-                                    <td>{product.productname}</td>
-                                    <td>{product.description || product.category}</td>
-                                    <td>Rs {product.discount || product.price}</td>
-                                    <td className={`stock ${Number(product.stock) > 0 ? "in-stock" : "out-stock"}`}>
-                                        {Number(product.stock) > 0 ? "In Stock" : "Out of Stock"}
-                                    </td>
-                                    <td>
-                                        <div className="action-btns">
-                                            <button className="edit-btn" onClick={() => startEdit(product)}>Edit</button>
-                                            <button className="delete-btn" onClick={() => deleteProduct(product._id)}>Delete</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                    <div className="product-table-wrap">
+                        <div className="product-table-scroll">
+                            <table className="product-table">
+                                <thead>
+                                    <tr>
+                                        <th>Image</th>
+                                        <th>Product Name</th>
+                                        <th>Detail</th>
+                                        <th>Amount</th>
+                                        <th>Stock</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {loading && (
+                                        <tr className="product-state-row">
+                                            <td className="product-state-cell" colSpan="6">Loading products...</td>
+                                        </tr>
+                                    )}
+                                    {!loading && products.length === 0 && (
+                                        <tr className="product-state-row">
+                                            <td className="product-state-cell" colSpan="6">No products found</td>
+                                        </tr>
+                                    )}
+                                    {!loading && products.map((product) => (
+                                        <tr key={product._id}>
+                                            <td data-label="Image">
+                                                {product.productimg?.[0]
+                                                    ? <img src={product.productimg[0]} alt={product.productname} />
+                                                    : <span className="product-no-image">NA</span>}
+                                            </td>
+                                            <td className="product-name-cell" data-label="Product Name">{product.productname}</td>
+                                            <td className="product-desc-cell" data-label="Detail" title={product.description || product.category}>
+                                                {product.description || product.category}
+                                            </td>
+                                            <td className="product-price-cell" data-label="Amount">Rs {product.discount || product.price}</td>
+                                            <td data-label="Stock">
+                                                <span className={`stock ${Number(product.stock) > 0 ? "in-stock" : "out-stock"}`}>
+                                                    {Number(product.stock) > 0 ? "In Stock" : "Out of Stock"}
+                                                </span>
+                                            </td>
+                                            <td data-label="Action">
+                                                <div className="action-btns">
+                                                    <button className="edit-btn" onClick={() => startEdit(product)}>Edit</button>
+                                                    <button className="delete-btn" onClick={() => deleteProduct(product._id)}>Delete</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
 
                 <Rightside />

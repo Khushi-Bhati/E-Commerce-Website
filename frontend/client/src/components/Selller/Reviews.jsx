@@ -176,7 +176,8 @@ const Reviews = () => {
 
                 {!loading && !error && filteredReviews.length > 0 && (
                     <div className="reviews-table-wrap">
-                        <table className="reviews-table">
+                        <div className="table-responsive">
+                            <table className="reviews-table">
                             <thead>
                                 <tr>
                                     <th>Product</th>
@@ -203,7 +204,8 @@ const Reviews = () => {
                                     </tr>
                                 ))}
                             </tbody>
-                        </table>
+                            </table>
+                        </div>
                     </div>
                 )}
             </main>

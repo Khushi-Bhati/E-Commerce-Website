@@ -360,6 +360,55 @@ body {
   animation: dashboardPageIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
+.dashboard-mobile-header {
+  display: none;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.dashboard-mobile-header h1 {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--clr-text-primary);
+}
+
+.dashboard-menu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--clr-border);
+  background: var(--clr-surface);
+  color: var(--clr-text-primary);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.dashboard-menu-btn:hover {
+  background: var(--brand-primary);
+  border-color: var(--brand-primary);
+  color: #fff;
+}
+
+.dashboard-menu-btn .material-symbols-sharp {
+  font-size: 1.4rem;
+}
+
+.seller-mobile-menu-btn {
+  display: none;
+  position: fixed !important;
+  top: calc(env(safe-area-inset-top, 0px) + 0.8rem) !important;
+  left: calc(env(safe-area-inset-left, 0px) + 0.8rem) !important;
+  z-index: 9999 !important;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
 @keyframes dashboardPageIn {
   from {
     opacity: 0;
@@ -1295,11 +1344,15 @@ body {
   backdrop-filter: blur(4px);
   z-index: var(--z-overlay);
   opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
   transition: opacity 0.3s ease;
 }
 
 .sidebar-overlay.active {
   opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
 
 /* ─────────────────────────────────────────────────────────
@@ -1523,6 +1576,30 @@ body {
   .main-wrapper main {
     grid-column: 1;
     padding: 1rem;
+    order: 1;
+  }
+
+  .dashboard-mobile-header {
+    display: flex;
+    position: sticky;
+    top: 0;
+    z-index: calc(var(--z-sidebar) - 1);
+    background: var(--clr-bg);
+    padding: 0.2rem 0 0.75rem;
+  }
+
+  .seller-mobile-menu-btn {
+    display: inline-flex;
+  }
+
+  .seller-mobile-menu-btn.is-hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .dashboard-page-title {
+    display: none;
   }
 
   /* Right section: single column stacked */
@@ -1532,11 +1609,11 @@ body {
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    order: 2;
   }
 
-  /* Hamburger menu visible */
-  .main-wrapper .right .top button#menu_bar {
-    display: flex;
+  .main-wrapper .right .top {
+    display: none;
   }
 
   /* Insights: single column */
@@ -1596,6 +1673,11 @@ body {
 
   .main-wrapper .right {
     padding: 0 0.75rem 0.75rem;
+  }
+
+  .seller-mobile-menu-btn {
+    top: calc(env(safe-area-inset-top, 0px) + 0.65rem) !important;
+    left: calc(env(safe-area-inset-left, 0px) + 0.65rem) !important;
   }
 
   .main-wrapper main .insights>div {
