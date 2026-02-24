@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import API from "../../config/api.js";
-import Swal from "sweetalert2";
 import Header from "./Header";
 import Footer from "./Footer";
 
@@ -150,7 +149,6 @@ const PaymentSuccess = () => {
     const [statusMessage, setStatusMessage] = useState("Verifying your payment, please wait…");
     const [showConfetti, setShowConfetti] = useState(false);
     const location = useLocation();
-    const navigate = useNavigate();
 
     useEffect(() => {
         const verifyPayment = async () => {
@@ -170,11 +168,21 @@ const PaymentSuccess = () => {
                     const storedDetails = localStorage.getItem("pendingStripePayment");
                     if (storedDetails) {
                         try {
-                            const paymentDetailsList = JSON.parse(storedDetails);
+                            const parsedPayment = JSON.parse(storedDetails);
+                            const paymentDetailsList = Array.isArray(parsedPayment)
+                                ? parsedPayment
+                                : (Array.isArray(parsedPayment?.paymentDetails) ? parsedPayment.paymentDetails : []);
+                            const selectedMethod = Array.isArray(parsedPayment)
+                                ? "card"
+                                : (parsedPayment?.method || "card");
+                            const normalizedMethod = ["card", "upi", "netbanking", "wallet"].includes(selectedMethod)
+                                ? selectedMethod
+                                : "card";
+
                             for (const details of paymentDetailsList) {
                                 await API.post("/payment/create", {
                                     ...details,
-                                    method: "card",
+                                    method: normalizedMethod,
                                     transactionId: sessionId,
                                 });
                             }
@@ -210,7 +218,7 @@ const PaymentSuccess = () => {
         };
 
         verifyPayment();
-    }, [location.search, navigate]);
+    }, [location.search]);
 
     return (
         <>

@@ -3,9 +3,35 @@ import { Ordermodel } from "../models/Ordermodel.js";
 import { Paymentmodel } from "../models/Paymentmodel.js";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_51MockStripeKey12345");
+let stripeClient = null;
+
+const getStripeClient = () => {
+    if (stripeClient) {
+        return stripeClient;
+    }
+
+    const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+    if (!stripeSecretKey) {
+        return null;
+    }
+
+    stripeClient = new Stripe(stripeSecretKey);
+    return stripeClient;
+};
 
 const normalizeId = (value) => (value || "").toString().replace(/"/g, "").trim();
+const ONLINE_METHODS = new Set(["card", "upi", "netbanking", "wallet"]);
+const STRIPE_METHOD_MAP = {
+    card: ["card"],
+    upi: ["upi"],
+    netbanking: ["netbanking"],
+    wallet: ["card"],
+};
+
+const normalizeOnlineMethod = (value) => {
+    const method = (value || "card").toString().toLowerCase().trim();
+    return ONLINE_METHODS.has(method) ? method : "card";
+};
 
 const createPaymentController = async (req, res) => {
     try {
@@ -136,7 +162,24 @@ const updatePaymentStatusController = async (req, res) => {
 
 const createStripeSession = async (req, res) => {
     try {
-        const { paymentDetails, totalAmount } = req.body;
+        const stripe = getStripeClient();
+        if (!stripe) {
+            return res.status(500).json({
+                status: "failed",
+                message: "Stripe is not configured on server. Missing STRIPE_SECRET_KEY."
+            });
+        }
+
+        const { paymentDetails, totalAmount, method } = req.body;
+        const normalizedMethod = normalizeOnlineMethod(method);
+        const amount = Number(totalAmount || 0);
+
+        if (!Array.isArray(paymentDetails) || paymentDetails.length === 0 || amount <= 0) {
+            return res.status(400).json({
+                status: "failed",
+                message: "paymentDetails and totalAmount are required to create Stripe session."
+            });
+        }
 
         const lineItems = [{
             price_data: {
@@ -145,21 +188,29 @@ const createStripeSession = async (req, res) => {
                     name: 'Easeincart Order',
                     description: `Payment for ${paymentDetails.length} order(s)`
                 },
-                unit_amount: Math.round(totalAmount * 100), // Stripe expects amounts in smallest currency unit (paise)
+                unit_amount: Math.round(amount * 100), // Stripe expects amounts in smallest currency unit (paise)
             },
             quantity: 1,
         }];
 
         const origin = process.env.CORS_ORIGIN || "http://localhost:3000";
         const session = await stripe.checkout.sessions.create({
-            payment_method_types: ['card'],
+            payment_method_types: STRIPE_METHOD_MAP[normalizedMethod] || ["card"],
             line_items: lineItems,
             mode: 'payment',
             success_url: `${origin}/customer/payment-success?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${origin}/customer/cart`,
+            metadata: {
+                selected_method: normalizedMethod
+            }
         });
 
-        res.status(200).json({ status: "success", id: session.id, url: session.url });
+        res.status(200).json({
+            status: "success",
+            id: session.id,
+            url: session.url,
+            selectedMethod: normalizedMethod
+        });
     } catch (error) {
         res.status(500).json({ status: "failed", message: error.message });
     }
@@ -167,6 +218,14 @@ const createStripeSession = async (req, res) => {
 
 const verifyStripeSession = async (req, res) => {
     try {
+        const stripe = getStripeClient();
+        if (!stripe) {
+            return res.status(500).json({
+                status: "failed",
+                message: "Stripe is not configured on server. Missing STRIPE_SECRET_KEY."
+            });
+        }
+
         const { session_id } = req.body;
         const session = await stripe.checkout.sessions.retrieve(session_id);
 

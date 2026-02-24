@@ -29,7 +29,6 @@ const CheckoutPage = () => {
     /* ─ form state ─ */
     const [address, setAddress] = useState(location.state?.shippingAddress || "");
     const [method, setMethod] = useState("cod");
-    const [transactionId, setTransactionId] = useState("");
     const [errors, setErrors] = useState({});
     const [placing, setPlacing] = useState(false);
     const [currentStep, setCurrentStep] = useState(1);   // 1 = address, 2 = payment
@@ -46,8 +45,6 @@ const CheckoutPage = () => {
         const e = {};
         if (!address.trim() || address.trim().length < 8)
             e.address = "Please enter a valid shipping address (min 8 characters).";
-        if (method !== "cod" && !transactionId.trim())
-            e.transactionId = "Transaction / reference ID is required for this payment method.";
         return e;
     };
 
@@ -86,12 +83,16 @@ const CheckoutPage = () => {
             }
 
             /* ── Stripe (Card) → redirect ── */
-            if (method === "card") {
-                localStorage.setItem("pendingStripePayment", JSON.stringify(paymentDetailsList));
+            if (method !== "cod") {
+                localStorage.setItem("pendingStripePayment", JSON.stringify({
+                    method,
+                    paymentDetails: paymentDetailsList
+                }));
 
                 const sessionRes = await API.post("/payment/stripe/create-session", {
                     paymentDetails: paymentDetailsList,
                     totalAmount: totals.subTotal,
+                    method,
                 });
 
                 if (sessionRes.data.url) {
@@ -106,7 +107,7 @@ const CheckoutPage = () => {
                 const payRes = await API.post("/payment/create", {
                     ...details,
                     method,
-                    transactionId: method === "cod" ? "" : transactionId.trim(),
+                    transactionId: "",
                 });
                 if (payRes.data.status !== "success")
                     throw new Error(payRes.data.message || "Failed to record payment");
@@ -261,31 +262,13 @@ const CheckoutPage = () => {
                                         ))}
                                     </div>
 
-                                    {/* Card selected: Stripe badge */}
-                                    {method === "card" && (
+                                    {/* Stripe badge for all online methods */}
+                                    {method !== "cod" && (
                                         <div className="checkout-info-box stripe">
                                             <span className="checkout-info-box-icon">🔒</span>
                                             <span>
                                                 You'll be redirected to <strong>Stripe's secure payment page</strong> to complete your payment.
                                             </span>
-                                        </div>
-                                    )}
-
-                                    {/* Non-COD, Non-Card: Transaction ID */}
-                                    {method !== "cod" && method !== "card" && (
-                                        <div className="checkout-form-group transaction-id-field">
-                                            <label>
-                                                {method === "upi" && "UPI Transaction / Reference ID"}
-                                                {method === "netbanking" && "Net Banking Reference Number"}
-                                                {method === "wallet" && "Wallet Transaction ID"}
-                                            </label>
-                                            <input
-                                                type="text"
-                                                value={transactionId}
-                                                onChange={(e) => { setTransactionId(e.target.value); setErrors((p) => ({ ...p, transactionId: undefined })); }}
-                                                placeholder="Enter your transaction / reference ID"
-                                            />
-                                            {errors.transactionId && <span className="checkout-form-error">{errors.transactionId}</span>}
                                         </div>
                                     )}
 
@@ -363,7 +346,7 @@ const CheckoutPage = () => {
                                     >
                                         {placing
                                             ? "Processing…"
-                                            : method === "card"
+                                            : method !== "cod"
                                                 ? "🔒 Pay with Stripe →"
                                                 : `✅ Place Order — ₹${toNumber(totals.subTotal).toFixed(2)}`
                                         }
