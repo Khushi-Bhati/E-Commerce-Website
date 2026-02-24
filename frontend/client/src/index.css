@@ -1462,7 +1462,7 @@ main {
   } */
 
   /* Search — compact */
-  /* .header-search-container {
+  .header-search-container {
     flex: 1 !important;
     min-width: 0 !important;
   }
@@ -1492,7 +1492,7 @@ main {
   .header-user-actions .action-btn {
     padding: 7px !important;
     font-size: 18px !important;
-  } */
+  }
 
   /* ── Banner ── */
   .banner {
