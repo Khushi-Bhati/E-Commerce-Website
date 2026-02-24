@@ -1352,7 +1352,7 @@ main {
   /* Container */
   .container {
     max-width: 100% !important;
-    padding: 0 20px !important;
+    padding: 15px 20px !important;
   }
 
   /* Header main — show hamburger */
