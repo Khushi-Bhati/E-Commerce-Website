@@ -1454,7 +1454,7 @@ body {
   }
 
   .main-wrapper {
-    grid-template-columns: var(--sidebar-collapsed-w) minmax(0, 1fr) 17rem;
+    grid-template-columns: var(--sidebar-collapsed-w) minmax(0, 1fr);
   }
 
   /* Hide text labels, keep icons */
@@ -1484,6 +1484,42 @@ body {
   .main-wrapper aside .logo h2 {
     font-size: 1.1rem;
   }
+
+  .main-wrapper main {
+    grid-column: 2 / -1;
+    padding: 1.25rem 0 0;
+  }
+
+  .main-wrapper .right {
+    grid-column: 1 / -1;
+    position: static;
+    top: auto;
+    max-height: none;
+    overflow: visible;
+    width: 100%;
+    min-width: 0;
+    padding: 0 0 1.25rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .main-wrapper .right .top {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+    margin-bottom: 0;
+  }
+
+  .main-wrapper .right .rp-profile-card,
+  .main-wrapper .right .rp-card {
+    width: 100%;
+    margin-bottom: 0;
+  }
+
+  .main-wrapper main .insights {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 /* ─────────────────────────────────────────────────────────
@@ -1500,17 +1536,27 @@ body {
   .main-wrapper .right {
     grid-column: 1 / -1;
     position: static;
+    top: auto;
     max-height: none;
+    overflow: visible;
+    width: 100%;
+    min-width: 0;
     padding: 0 0 1.25rem;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
     align-items: start;
   }
 
   .main-wrapper .right .top {
     grid-column: 1 / -1;
     justify-content: flex-start;
+  }
+
+  .main-wrapper .right .rp-profile-card,
+  .main-wrapper .right .rp-card {
+    width: 100%;
+    margin-bottom: 0;
   }
 
   /* Main fills remaining space */
@@ -1605,6 +1651,10 @@ body {
   /* Right section: single column stacked */
   .main-wrapper .right {
     grid-column: 1;
+    width: 100%;
+    min-width: 0;
+    max-height: none;
+    overflow: visible;
     padding: 0 1rem 1rem;
     display: flex;
     flex-direction: column;
@@ -1614,6 +1664,28 @@ body {
 
   .main-wrapper .right .top {
     display: none;
+  }
+
+  .main-wrapper .right .rp-profile-card,
+  .main-wrapper .right .rp-card {
+    width: 100%;
+    margin-bottom: 0;
+  }
+
+  .main-wrapper .right .rp-card-header,
+  .main-wrapper .right .rp-profile-body,
+  .main-wrapper .right .rp-chart,
+  .main-wrapper .right .rp-chart-legend,
+  .main-wrapper .right .rp-activity-list,
+  .main-wrapper .right .rp-top-products,
+  .main-wrapper .right .rp-quick-grid,
+  .main-wrapper .right .rp-health-items {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .main-wrapper .right .rp-card-header {
+    padding-top: 14px;
   }
 
   /* Insights: single column */
@@ -1673,6 +1745,24 @@ body {
 
   .main-wrapper .right {
     padding: 0 0.75rem 0.75rem;
+  }
+
+  .main-wrapper .right .rp-card-header {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .main-wrapper .right .rp-quick-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .main-wrapper .right .rp-stats {
+    flex-wrap: wrap;
+  }
+
+  .main-wrapper .right .rp-stat {
+    min-width: 33.33%;
   }
 
   .seller-mobile-menu-btn {
@@ -1746,6 +1836,10 @@ body {
   .recent_updates .update .profile-photo {
     width: 32px;
     height: 32px;
+  }
+
+  .main-wrapper .right .rp-stat {
+    min-width: 100%;
   }
 }
 
