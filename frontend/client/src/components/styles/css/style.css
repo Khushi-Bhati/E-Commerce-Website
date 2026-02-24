@@ -1864,6 +1864,40 @@ footer {
  * responsive larger than 570px screen
  */
 
+/**
+ * keep top header visible on 480px screens
+ */
+@media (max-width: 480px) {
+  .header-top {
+    display: block !important;
+    min-height: 34px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--cultured);
+  }
+
+  .header-top .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .header-social-container,
+  .header-top-actions {
+    display: none !important;
+  }
+
+  .header-alert-news {
+    width: 100%;
+    text-align: center;
+  }
+
+  .header-alert-news p {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
 @media (min-width: 570px) {
 
   /**

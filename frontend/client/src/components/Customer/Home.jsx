@@ -41,6 +41,7 @@ const Home = () => {
 
   const [searchTerm, setSearchTerm] = useState(getInitialSearchTerm)
   const [selectedCategory, setSelectedCategory] = useState(getInitialCategory)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   useEffect(() => {
     const params = new URLSearchParams(location.search)
@@ -131,6 +132,20 @@ const Home = () => {
     getCart();
   }, [getCart, getProducts]);
 
+  useEffect(() => {
+    if (typeof document === "undefined") return undefined;
+
+    if (isSidebarOpen && window.innerWidth < 1024) {
+      document.body.classList.add("customer-home-menu-open");
+    } else {
+      document.body.classList.remove("customer-home-menu-open");
+    }
+
+    return () => {
+      document.body.classList.remove("customer-home-menu-open");
+    };
+  }, [isSidebarOpen]);
+
   const normalizeCategory = (value) => (value || "").toString().trim().toLowerCase();
 
   const categoryStats = useMemo(() => {
@@ -186,6 +201,14 @@ const Home = () => {
   const clearFilters = () => {
     setSearchTerm("");
     setSelectedCategory("all");
+  };
+
+  const handleSidebarCategorySelect = (categoryKey) => {
+    setSelectedCategory(categoryKey);
+
+    if (typeof window !== "undefined" && window.innerWidth < 1024) {
+      setIsSidebarOpen(false);
+    }
   };
 
   const handleAddToCart = async (productId) => {
@@ -266,6 +289,17 @@ const Home = () => {
 - PRODUCT
     */}
         <div className="product-container">
+          <div className="container customer-home-mobile-menu-row">
+           
+          </div>
+          {isSidebarOpen && (
+            <button
+              type="button"
+              className="customer-home-sidebar-overlay"
+              onClick={() => setIsSidebarOpen(false)}
+              aria-label="Close category menu"
+            />
+          )}
           <div className="container">
             {/*
     - SIDEBAR
@@ -273,9 +307,11 @@ const Home = () => {
             <Sidebar
               categoryStats={categoryStats}
               selectedCategory={selectedCategory}
-              onSelectCategory={setSelectedCategory}
+              onSelectCategory={handleSidebarCategorySelect}
               bestSellerProducts={bestSellerProducts}
               loading={productsLoading}
+              isOpen={isSidebarOpen}
+              onClose={() => setIsSidebarOpen(false)}
             />
             <div className="product-box">
               <div className="customer-home-toolbar">

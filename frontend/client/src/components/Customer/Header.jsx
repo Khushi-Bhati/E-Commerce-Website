@@ -70,7 +70,7 @@ const Header = ({ cartCount = 0, searchTerm, onSearchChange }) => {
         setIsMobileMenuOpen(false)
     };
 
-    // Auto-fetch profile if logged in but profile not yet in Redux (e.g. page refresh)
+
     useEffect(() => {
         const id = userID || localStorage.getItem('userID');
         if (id && !profiledata) {
@@ -196,6 +196,8 @@ const Header = ({ cartCount = 0, searchTerm, onSearchChange }) => {
                             className="mobile-menu-toggle"
                             onClick={() => setIsMobileMenuOpen(true)}
                             aria-label="Open menu"
+                            aria-expanded={isMobileMenuOpen}
+                            aria-controls="customer-mobile-nav"
                         >
                             <ion-icon name="menu-outline" />
                         </button>
@@ -233,11 +235,9 @@ const Header = ({ cartCount = 0, searchTerm, onSearchChange }) => {
                                 {/* Avatar */}
                                 <div className="user-avatar">
                                     {profiledata?.profileimg ? (
-<<<<<<< HEAD
                                         <img src={profiledata.profileimg.startsWith("http") ? profiledata.profileimg : `${process.env.REACT_APP_ENV_URL}/temp/${profiledata.profileimg}`} alt="avatar" className="user-avatar-img" />
-=======
-                                        <img src={profiledata.profileimg.startsWith("http") ? profiledata.profileimg : `http://localhost:8000/temp/${profiledata.profileimg}`} alt="avatar" className="user-avatar-img" />
->>>>>>> f1b853994271a68fafe3d6ce836129b73a6c8a6a
+                                    
+
                                     ) : (
                                         <div className="user-avatar-initial">
                                             {profiledata?.name
@@ -258,7 +258,7 @@ const Header = ({ cartCount = 0, searchTerm, onSearchChange }) => {
                                 </div>
 
                                 {/* Dropdown caret */}
-                                <ion-icon name="chevron-down-outline" class="user-chip-caret" />
+                                <ion-icon name="chevron-down-outline" className="user-chip-caret" />
 
                                 {/* Dropdown menu */}
                                 {isDropdownOpen && (
@@ -266,11 +266,10 @@ const Header = ({ cartCount = 0, searchTerm, onSearchChange }) => {
                                         <div className="user-dropdown-header">
                                             <div className="user-dropdown-avatar">
                                                 {profiledata?.profileimg ? (
-<<<<<<< HEAD
+
                                                     <img src={profiledata.profileimg.startsWith("http") ? profiledata.profileimg : `${process.env.REACT_APP_ENV_URL}/temp/${profiledata.profileimg}`} alt="avatar" />
-=======
-                                                    <img src={profiledata.profileimg.startsWith("http") ? profiledata.profileimg : `http://localhost:8000/temp/${profiledata.profileimg}`} alt="avatar" />
->>>>>>> f1b853994271a68fafe3d6ce836129b73a6c8a6a
+
+            
                                                 ) : (
                                                     <div className="user-dropdown-initial">
                                                         {profiledata?.name
@@ -304,11 +303,9 @@ const Header = ({ cartCount = 0, searchTerm, onSearchChange }) => {
                             </div>
 
                             {/* ── Cart icon (quick access) ── */}
-                            <Link to="/customer/cart">
-                                <button className="action-btn">
-                                    <ion-icon name="bag-handle-outline" />
-                                    {cartCount > 0 && <span className="count">{cartCount}</span>}
-                                </button>
+                            <Link to="/customer/cart" className="action-btn header-cart-action" aria-label="Open cart">
+                                <ion-icon name="bag-handle-outline" />
+                                {cartCount > 0 && <span className="count">{cartCount}</span>}
                             </Link>
                         </div>
                     </div>
@@ -509,7 +506,7 @@ const Header = ({ cartCount = 0, searchTerm, onSearchChange }) => {
             {isMobileMenuOpen && (
                 <div className="mobile-menu-overlay" onClick={closeMobileMenu} />
             )}
-            <nav className={`mobile-nav-drawer ${isMobileMenuOpen ? 'open' : ''}`}>
+            <nav id="customer-mobile-nav" className={`mobile-nav-drawer ${isMobileMenuOpen ? 'open' : ''}`}>
                 {/* Drawer Header */}
                 <div className="mobile-nav-header">
                     <div className="brand-logo-pill" style={{ display: 'inline-flex' }}>
@@ -541,11 +538,10 @@ const Header = ({ cartCount = 0, searchTerm, onSearchChange }) => {
                 <div className="mobile-nav-user">
                     <div className="user-avatar">
                         {profiledata?.profileimg ? (
-<<<<<<< HEAD
+
                             <img src={profiledata.profileimg.startsWith("http") ? profiledata.profileimg : `${process.env.REACT_APP_ENV_URL}/temp/${profiledata.profileimg}`} alt="avatar" className="user-avatar-img" />
-=======
-                            <img src={profiledata.profileimg.startsWith("http") ? profiledata.profileimg : `http://localhost:8000/temp/${profiledata.profileimg}`} alt="avatar" className="user-avatar-img" />
->>>>>>> f1b853994271a68fafe3d6ce836129b73a6c8a6a
+
+                          
                         ) : (
                             <div className="user-avatar-initial">
                                 {profiledata?.name ? profiledata.name.charAt(0).toUpperCase() : (role === 'buyer' ? 'B' : 'U')}
