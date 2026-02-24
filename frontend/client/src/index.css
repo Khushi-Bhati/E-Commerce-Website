@@ -1762,7 +1762,7 @@ main {
 
   /* Slider almost full height */
   .slider-item {
-    max-height: 200px !important;
+    max-height: 300px !important;
   }
 
   /* banner text */
