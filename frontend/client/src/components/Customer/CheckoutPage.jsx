@@ -7,11 +7,8 @@ import Footer from "./Footer";
 import "./../styles/checkout.css";
 
 const PAYMENT_METHODS = [
-    { id: "cod", label: "COD", icon: "💵", desc: "Cash on Delivery" },
-    { id: "upi", label: "UPI", icon: "📱", desc: "UPI / QR Pay" },
-    { id: "card", label: "Card", icon: "💳", desc: "Credit / Debit" },
-    { id: "netbanking", label: "Net Bank", icon: "🏦", desc: "Net Banking" },
-    { id: "wallet", label: "Wallet", icon: "👛", desc: "Digital Wallet" },
+    { id: "cod", label: "COD", icon: "\u{1F4B5}", desc: "Cash on Delivery" },
+    { id: "card", label: "Card", icon: "\u{1F4B3}", desc: "Credit / Debit" },
 ];
 
 const toNumber = (v) => { const n = Number(v); return Number.isFinite(n) ? n : 0; };
@@ -60,6 +57,7 @@ const CheckoutPage = () => {
 
             const createdOrders = [];
             const paymentDetailsList = [];
+            const normalizedMethod = method === "cod" ? "cod" : "card";
 
             for (const group of checkoutItems) {
                 const orderRes = await API.post("/order/create", {
@@ -83,16 +81,16 @@ const CheckoutPage = () => {
             }
 
             /* ── Stripe (Card) → redirect ── */
-            if (method !== "cod") {
+            if (normalizedMethod !== "cod") {
                 localStorage.setItem("pendingStripePayment", JSON.stringify({
-                    method,
+                    method: normalizedMethod,
                     paymentDetails: paymentDetailsList
                 }));
 
                 const sessionRes = await API.post("/payment/stripe/create-session", {
                     paymentDetails: paymentDetailsList,
                     totalAmount: totals.subTotal,
-                    method,
+                    method: normalizedMethod,
                 });
 
                 if (sessionRes.data.url) {
@@ -106,7 +104,7 @@ const CheckoutPage = () => {
             for (const details of paymentDetailsList) {
                 const payRes = await API.post("/payment/create", {
                     ...details,
-                    method,
+                    method: normalizedMethod,
                     transactionId: "",
                 });
                 if (payRes.data.status !== "success")
@@ -123,7 +121,7 @@ const CheckoutPage = () => {
           <div style="text-align:left;font-family:'Inter',sans-serif">
             <p style="margin:6px 0"><b>Orders created:</b> ${createdOrders.length}</p>
             <p style="margin:6px 0"><b>Total amount:</b> ₹${toNumber(totals.subTotal).toFixed(2)}</p>
-            <p style="margin:6px 0"><b>Payment method:</b> ${method.toUpperCase()}</p>
+            <p style="margin:6px 0"><b>Payment method:</b> ${normalizedMethod.toUpperCase()}</p>
           </div>
         `,
                 confirmButtonColor: "#6366f1",
@@ -261,6 +259,9 @@ const CheckoutPage = () => {
                                             </div>
                                         ))}
                                     </div>
+                                    <p className="checkout-security-note">
+                                        UPI, Net Banking, and Wallet are currently unavailable for Stripe checkout.
+                                    </p>
 
                                     {/* Stripe badge for all online methods */}
                                     {method !== "cod" && (

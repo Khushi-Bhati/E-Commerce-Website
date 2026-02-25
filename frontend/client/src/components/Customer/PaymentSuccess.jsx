@@ -172,12 +172,7 @@ const PaymentSuccess = () => {
                             const paymentDetailsList = Array.isArray(parsedPayment)
                                 ? parsedPayment
                                 : (Array.isArray(parsedPayment?.paymentDetails) ? parsedPayment.paymentDetails : []);
-                            const selectedMethod = Array.isArray(parsedPayment)
-                                ? "card"
-                                : (parsedPayment?.method || "card");
-                            const normalizedMethod = ["card", "upi", "netbanking", "wallet"].includes(selectedMethod)
-                                ? selectedMethod
-                                : "card";
+                            const normalizedMethod = "card";
 
                             for (const details of paymentDetailsList) {
                                 await API.post("/payment/create", {
