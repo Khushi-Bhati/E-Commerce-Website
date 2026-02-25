@@ -112,6 +112,54 @@ const styles = `
   @keyframes psFall {
     to { transform: translateY(110vh) rotate(720deg); opacity: 0; }
   }
+
+  .ps-order-details {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 20px;
+    margin: 24px 0;
+    text-align: left;
+  }
+  .ps-order-details h3 {
+    color: #a5b4fc;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .ps-order-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .ps-order-row:last-child {
+    border-bottom: none;
+  }
+  .ps-order-label {
+    color: rgba(255,255,255,0.6);
+    font-size: 13px;
+  }
+  .ps-order-value {
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .ps-order-amount {
+    color: #34d399;
+    font-size: 20px;
+    font-weight: 700;
+  }
+  .ps-btn-group {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
 `;
 
 const Confetti = () => {
@@ -148,6 +196,7 @@ const PaymentSuccess = () => {
     const [status, setStatus] = useState("verifying");
     const [statusMessage, setStatusMessage] = useState("Verifying your payment, please wait…");
     const [showConfetti, setShowConfetti] = useState(false);
+    const [orderInfo, setOrderInfo] = useState(null);
     const location = useLocation();
 
     useEffect(() => {
@@ -174,7 +223,14 @@ const PaymentSuccess = () => {
                                 : (Array.isArray(parsedPayment?.paymentDetails) ? parsedPayment.paymentDetails : []);
                             const normalizedMethod = "card";
 
+                            // Store order info before processing payments
+                            const orderIds = [];
+                            let totalAmount = 0;
+                            
                             for (const details of paymentDetailsList) {
+                                orderIds.push(details.orderId);
+                                totalAmount += Number(details.amount) || 0;
+                                
                                 await API.post("/payment/create", {
                                     ...details,
                                     method: normalizedMethod,
@@ -184,6 +240,13 @@ const PaymentSuccess = () => {
 
                             const userId = (localStorage.getItem("userID") || "").replace(/"/g, "").trim();
                             if (userId) await API.delete(`/cart/clear/${userId}`);
+
+                            // Store order info for display
+                            setOrderInfo({
+                                orderIds,
+                                totalAmount,
+                                transactionId: sessionId
+                            });
 
                             localStorage.removeItem("pendingStripePayment");
                             setStatus("success");
@@ -243,9 +306,33 @@ const PaymentSuccess = () => {
                         {/* Message */}
                         <p className="ps-msg">{statusMessage}</p>
 
+                        {/* Order Details - Show after successful payment */}
+                        {status === "success" && orderInfo && (
+                            <div className="ps-order-details">
+                                <h3>Order Summary</h3>
+                                <div className="ps-order-row">
+                                    <span className="ps-order-label">Orders Placed</span>
+                                    <span className="ps-order-value">{orderInfo.orderIds?.length || 1}</span>
+                                </div>
+                                <div className="ps-order-row">
+                                    <span className="ps-order-label">Transaction ID</span>
+                                    <span className="ps-order-value" style={{ fontSize: "11px", maxWidth: "150px", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                        {orderInfo.transactionId?.slice(0, 20)}...
+                                    </span>
+                                </div>
+                                <div className="ps-order-row">
+                                    <span className="ps-order-label">Total Amount</span>
+                                    <span className="ps-order-value ps-order-amount">₹{Number(orderInfo.totalAmount || 0).toFixed(2)}</span>
+                                </div>
+                            </div>
+                        )}
+
                         {/* Actions */}
                         {status === "success" && (
-                            <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+                            <div className="ps-btn-group">
+                                <Link to="/customer/orders" className="ps-btn secondary">
+                                    📋 View My Orders
+                                </Link>
                                 <Link to="/customer/home" className="ps-btn primary">
                                     🛍️ Continue Shopping
                                 </Link>
