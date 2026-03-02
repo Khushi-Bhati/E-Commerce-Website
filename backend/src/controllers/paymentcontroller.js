@@ -193,7 +193,7 @@ const createStripeSession = async (req, res) => {
             quantity: 1,
         }];
 
-        const origin = process.env.CORS_ORIGIN || "http://localhost:3000";
+        const origin = process.env.CORS_ORIGIN || "https://e-commerce-website-1-tit4.onrender.com";
         const session = await stripe.checkout.sessions.create({
             payment_method_types: STRIPE_METHOD_MAP[normalizedMethod] || ["card"],
             line_items: lineItems,
